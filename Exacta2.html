@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solucionador de Ecuaciones Diferenciales Exactas</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        input, button { margin: 5px; padding: 10px; }
+        #output { margin-top: 20px; white-space: pre-line; }
+    </style>
+</head>
+<body>
+    <h2>Solucionador de Ecuaciones Diferenciales Exactas</h2>
+    <label for="M">Función M(x,y):</label>
+    <input type="text" id="M" placeholder="Ej: x^2 + y">
+    <br>
+    <label for="N">Función N(x,y):</label>
+    <input type="text" id="N" placeholder="Ej: y^2 + x">
+    <br>
+    <button onclick="resolver()">Resolver</button>
+    <div id="output"></div>
+    <script>
+        function derivadaParcial(expr, variable) {
+            try {
+                return math.derivative(expr, variable).toString();
+            } catch (e) {
+                return 'Error';
+            }
+        }
+
+        function integrar(expr, variable) {
+            try {
+                return math.integral(expr, variable).toString();
+            } catch (e) {
+                return 'Error';
+            }
+        }
+
+        function resolver() {
+            const M = document.getElementById('M').value;
+            const N = document.getElementById('N').value;
+            let output = "";
+            
+            const dM_dy = derivadaParcial(M, 'y');
+            const dN_dx = derivadaParcial(N, 'x');
+            
+            output += `∂M/∂y = ${dM_dy}\n`;
+            output += `∂N/∂x = ${dN_dx}\n`;
+            
+            if (dM_dy === dN_dx) {
+                output += "La ecuación es exacta.\n\n";
+                let F_x = integrar(M, 'x');
+                let F_y = integrar(N, 'y');
+                output += `Integrando M respecto a x: F(x,y) = ${F_x} + C(y)\n`;
+                output += `Integrando N respecto a y: F(x,y) = ${F_y} + C(x)\n`;
+                output += "La solución general es F(x, y) = C.\n";
+            } else {
+                output += "La ecuación no es exacta. Se requiere un factor integrante.\n";
+            }
+            document.getElementById('output').innerText = output;
+        }
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.5.1/math.min.js"></script>
+</body>
+</html>
